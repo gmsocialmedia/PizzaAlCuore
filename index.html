@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pizza Al Cuore | Pizzaria Artesanal</title>
     <meta name="description" content="Pizza Al Cuore - Pizzaria artesanal com sabores autênticos no forno a lenha.">
+    <link rel="icon" href="images/logo.jpeg" type="image/jpeg">
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -20,7 +21,8 @@
                 <div class="nav-links">
                     <a href="#hero">Início</a>
                     <a href="#cardapio">Cardápio</a>
-                    <a href="#contato">Contato</a>
+                    <a href="#bebidas">Bebidas</a>
+                    <a href="#newsletter">Newsletter</a>
                     <button class="cart-icon" id="cartBtn">
                         🛒 <span id="cartCount">0</span>
                     </button>
@@ -32,27 +34,20 @@
             </div>
         </nav>
 
-        <!-- Hero Section -->
+        <!-- Hero Section com imagem grande -->
         <section id="hero" class="hero">
-            <div class="hero-bg"></div>
             <div class="container hero-content">
                 <div class="hero-text">
                     <span class="hero-tag">Pizzeria Artesanal</span>
                     <h1 class="hero-title">Pizza <span class="gold">Al Cuore</span></h1>
                 </div>
-                <div class="hero-pizza">
-                    <div class="pizza-card">
-                        <img src="images/margherita.jpg" alt="Pizza Margherita" class="pizza-main-img">
-                        <h2>Margherita</h2>
-                        <p>Molho de tomate, mozzarella di bufala e manjericão</p>
-                        <span class="price">R$ 42</span>
-                        <button class="btn-order add-to-cart" data-name="Margherita" data-price="42">Adicionar ao Carrinho</button>
-                    </div>
+                <div class="hero-image">
+                    <img src="images/hero.png" alt="Pizza Al Cuore" class="hero-img">
                 </div>
             </div>
         </section>
 
-        <!-- Cardápio completo -->
+        <!-- Cardápio de Pizzas -->
         <section id="cardapio" class="cardapio">
             <div class="container">
                 <div class="section-header">
@@ -70,7 +65,7 @@
                         <div class="pizza-info"><h3>Margherita</h3><p>Tomate, mozzarella, manjericão</p><div class="pizza-price">R$ 42</div><button class="btn-add add-to-cart" data-name="Margherita" data-price="42">+ Adicionar</button></div>
                     </div>
                     <div class="pizza-item" data-categoria="tradicional">
-                        <div class="pizza-img-wrapper"><img src="images/mussarela.jpg" alt="Mussarela"></div>
+                        <div class="pizza-img-wrapper"><img src="images/mussarela.png" alt="Mussarela"></div>
                         <div class="pizza-info"><h3>Mussarela</h3><p>Mussarela, tomate, orégano</p><div class="pizza-price">R$ 38</div><button class="btn-add add-to-cart" data-name="Mussarela" data-price="38">+ Adicionar</button></div>
                     </div>
                     <div class="pizza-item" data-categoria="tradicional">
@@ -78,7 +73,7 @@
                         <div class="pizza-info"><h3>Calabresa</h3><p>Calabresa fatiada, cebola, mussarela</p><div class="pizza-price">R$ 45</div><button class="btn-add add-to-cart" data-name="Calabresa" data-price="45">+ Adicionar</button></div>
                     </div>
                     <div class="pizza-item" data-categoria="tradicional">
-                        <div class="pizza-img-wrapper"><img src="images/napolitana.jpg" alt="Napolitana"></div>
+                        <div class="pizza-img-wrapper"><img src="images/napoli.jpg" alt="Napolitana"></div>
                         <div class="pizza-info"><h3>Napolitana</h3><p>Tomate, alho, manjericão, parmesão</p><div class="pizza-price">R$ 40</div><button class="btn-add add-to-cart" data-name="Napolitana" data-price="40">+ Adicionar</button></div>
                     </div>
                     <div class="pizza-item" data-categoria="especial">
@@ -97,17 +92,116 @@
             </div>
         </section>
 
-        <!-- Modal de personalização -->
+<!-- Substitua a seção de bebidas pelo trecho abaixo -->
+<section id="bebidas" class="bebidas">
+    <div class="container">
+        <div class="section-header">
+            <span>Bebidas</span>
+            <h2>Refrescantes</h2>
+        </div>
+        <div class="bebidas-grid">
+            <div class="bebida-item">
+                <div class="bebida-img-wrapper">
+                    <img src="images/coca-lata.jpg" alt="Coca Cola Lata">
+                </div>
+                <h3>Coca Cola Lata</h3>
+                <p>350ml</p>
+                <div class="bebida-price">R$ 6</div>
+                <button class="btn-add add-bebida" data-name="Coca Cola Lata" data-price="6">+ Adicionar</button>
+            </div>
+            <div class="bebida-item">
+                <div class="bebida-img-wrapper">
+                    <img src="images/coca-1l.jpg" alt="Coca Cola 1L">
+                </div>
+                <h3>Coca Cola 1L</h3>
+                <p>1 litro</p>
+                <div class="bebida-price">R$ 8</div>
+                <button class="btn-add add-bebida" data-name="Coca Cola 1L" data-price="8">+ Adicionar</button>
+            </div>
+            <div class="bebida-item">
+                <div class="bebida-img-wrapper">
+                    <img src="images/coca-2l.jpg" alt="Coca Cola 2L">
+                </div>
+                <h3>Coca Cola 2L</h3>
+                <p>2 litros</p>
+                <div class="bebida-price">R$ 12</div>
+                <button class="btn-add add-bebida" data-name="Coca Cola 2L" data-price="12">+ Adicionar</button>
+            </div>
+            <div class="bebida-item">
+                <div class="bebida-img-wrapper">
+                    <img src="images/guarana-1l.jpg" alt="Guaraná 1L">
+                </div>
+                <h3>Guaraná 1L</h3>
+                <p>1 litro</p>
+                <div class="bebida-price">R$ 7</div>
+                <button class="btn-add add-bebida" data-name="Guaraná 1L" data-price="7">+ Adicionar</button>
+            </div>
+            <div class="bebida-item">
+                <div class="bebida-img-wrapper">
+                    <img src="images/guarana-2l.jpg" alt="Guaraná 2L">
+                </div>
+                <h3>Guaraná 2L</h3>
+                <p>2 litros</p>
+                <div class="bebida-price">R$ 10</div>
+                <button class="btn-add add-bebida" data-name="Guaraná 2L" data-price="10">+ Adicionar</button>
+            </div>
+            <div class="bebida-item">
+                <div class="bebida-img-wrapper">
+                    <img src="images/agua-1l.jpg" alt="Água 1L">
+                </div>
+                <h3>Água 1L</h3>
+                <p>1 litro</p>
+                <div class="bebida-price">R$ 5</div>
+                <button class="btn-add add-bebida" data-name="Água 1L" data-price="5">+ Adicionar</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+        <!-- Newsletter -->
+        <section id="newsletter" class="newsletter">
+            <div class="container">
+                <div class="section-header">
+                    <span>Fique por dentro</span>
+                    <h2>Newsletter</h2>
+                    <p>Preencha os campos abaixo para receber promoções e novidades em primeira mão!</p>
+                </div>
+                <div class="newsletter-content">
+                    <form id="newsletterForm" class="newsletter-form">
+                        <div class="form-group">
+                            <input type="text" id="newsName" placeholder="Seu nome" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="newsEmail" placeholder="Seu e-mail" required>
+                        </div>
+                        <button type="submit" class="btn-subscribe">Assinar Newsletter</button>
+                    </form>
+                    <div class="social-follow">
+                        <h3>Siga-nos</h3>
+                        <div class="social-icons">
+                            <a href="https://instagram.com/_gm_business_" target="_blank" class="social-icon instagram">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                                <span>Instagram</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Modais (personalização e carrinho) -->
         <div id="customModal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
                 <h3>Personalize seu pedido</h3>
                 <div class="modal-body">
                     <div class="custom-section"><h4>🥤 Bebidas</h4>
-                        <label><input type="checkbox" value="Coca 1L" data-price="8"> Coca 1L - R$8</label>
-                        <label><input type="checkbox" value="Coca 2L" data-price="12"> Coca 2L - R$12</label>
+                        <label><input type="checkbox" value="Coca Cola Lata" data-price="6"> Coca Cola Lata - R$6</label>
+                        <label><input type="checkbox" value="Coca Cola 1L" data-price="8"> Coca Cola 1L - R$8</label>
+                        <label><input type="checkbox" value="Coca Cola 2L" data-price="12"> Coca Cola 2L - R$12</label>
+                        <label><input type="checkbox" value="Guaraná 1L" data-price="7"> Guaraná 1L - R$7</label>
                         <label><input type="checkbox" value="Guaraná 2L" data-price="10"> Guaraná 2L - R$10</label>
-                        <label><input type="checkbox" value="Coca Lata" data-price="5"> Coca Lata - R$5</label>
+                        <label><input type="checkbox" value="Água 1L" data-price="5"> Água 350mL - R$5</label>
                     </div>
                     <div class="custom-section"><h4>🧂 Ingredientes extras</h4>
                         <label><input type="checkbox" value="Ketchup" data-price="2"> Ketchup - R$2</label>
@@ -124,7 +218,6 @@
             </div>
         </div>
 
-        <!-- Modal do Carrinho -->
         <div id="cartModal" class="modal">
             <div class="modal-content cart-modal">
                 <span class="close-cart">&times;</span>
@@ -147,7 +240,9 @@
         <div id="toastMsg" class="toast">Produto adicionado ao carrinho!</div>
 
         <footer class="footer">
-            <div class="container"><p>&copy; 2025 Pizza Al Cuore. Todos os direitos reservados.</p></div>
+            <div class="container">
+                <p>Pizza Al Cuore © Todos os direitos reservados</p>
+            </div>
         </footer>
     </div>
     <script src="script.js"></script>

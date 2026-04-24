@@ -11,6 +11,7 @@ const cartTotalSpan = document.getElementById('cartTotal');
 const toast = document.getElementById('toastMsg');
 const confirmOrderBtn = document.getElementById('confirmOrderBtn');
 
+// Abrir/fechar modais
 cartBtn.onclick = () => {
     renderCart();
     cartModal.style.display = 'flex';
@@ -42,13 +43,23 @@ function renderCart() {
     let total = 0;
     cart.forEach((item, idx) => {
         total += item.total;
-        html += `<div class="cart-item">
-            <strong>🍕 ${item.pizza}</strong> - R$ ${item.basePrice.toFixed(2)}<br>`;
-        if (item.bebidas.length) html += `🥤 Bebidas: ${item.bebidas.map(b=>`${b.name} (R$${b.price})`).join(', ')}<br>`;
-        if (item.extras.length) html += `🧂 Extras: ${item.extras.map(e=>e.name).join(', ')}<br>`;
-        if (item.borda) html += `🧀 Borda: ${item.borda.name}<br>`;
-        html += `<small>Subtotal: R$ ${item.total.toFixed(2)}</small><br>
-        <button class="remove-item" data-idx="${idx}">Remover</button></div>`;
+        if (item.tipo === 'pizza') {
+            html += `<div class="cart-item">
+                <strong>🍕 ${item.pizza}</strong> - R$ ${item.basePrice.toFixed(2)}<br>`;
+            if (item.bebidas && item.bebidas.length) {
+                html += `🥤 Bebidas: ${item.bebidas.map(b=>`${b.name} (R$${b.price})`).join(', ')}<br>`;
+            }
+            if (item.extras && item.extras.length) {
+                html += `🧂 Extras: ${item.extras.map(e=>e.name).join(', ')}<br>`;
+            }
+            if (item.borda) html += `🧀 Borda: ${item.borda.name}<br>`;
+            html += `<small>Subtotal: R$ ${item.total.toFixed(2)}</small><br>
+            <button class="remove-item" data-idx="${idx}">Remover</button></div>`;
+        } else if (item.tipo === 'bebida') {
+            html += `<div class="cart-item">
+                <strong>🥤 ${item.nome}</strong> - R$ ${item.preco.toFixed(2)}<br>
+                <button class="remove-item" data-idx="${idx}">Remover</button></div>`;
+        }
     });
     cartItemsDiv.innerHTML = html;
     cartTotalSpan.innerText = total.toFixed(2);
@@ -64,6 +75,24 @@ function renderCart() {
     });
 }
 
+// Adicionar bebida diretamente (sem modal)
+document.querySelectorAll('.add-bebida').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const nome = btn.getAttribute('data-name');
+        const preco = parseFloat(btn.getAttribute('data-price'));
+        cart.push({
+            id: nextId++,
+            tipo: 'bebida',
+            nome: nome,
+            preco: preco,
+            total: preco
+        });
+        updateCartCount();
+        showToast(`${nome} adicionada ao carrinho!`);
+    });
+});
+
+// Adicionar pizza (com modal)
 document.querySelectorAll('.add-to-cart').forEach(btn => {
     btn.addEventListener('click', (e) => {
         const pizzaName = btn.getAttribute('data-name');
@@ -77,7 +106,7 @@ document.getElementById('confirmAdd').onclick = () => {
     if (!currentPizza) return;
     
     const bebidas = Array.from(document.querySelectorAll('#customModal input[type="checkbox"]'))
-        .filter(cb => cb.checked && cb.value)
+        .filter(cb => cb.checked && cb.value && ['Coca Cola Lata', 'Coca Cola 1L', 'Coca Cola 2L', 'Guaraná 1L', 'Guaraná 2L', 'Água 1L'].includes(cb.value))
         .map(cb => ({ name: cb.value, price: parseFloat(cb.dataset.price || 0) }));
     const extras = Array.from(document.querySelectorAll('#customModal input[type="checkbox"]'))
         .filter(cb => ['Ketchup', 'Maionese', 'Mostarda'].includes(cb.value) && cb.checked)
@@ -94,6 +123,7 @@ document.getElementById('confirmAdd').onclick = () => {
     
     cart.push({
         id: nextId++,
+        tipo: 'pizza',
         pizza: currentPizza.name,
         basePrice: currentPizza.basePrice,
         bebidas: bebidas,
@@ -102,7 +132,8 @@ document.getElementById('confirmAdd').onclick = () => {
         total: totalItem
     });
     updateCartCount();
-    showToast(`${currentPizza.name} adicionado!`);
+    showToast(`${currentPizza.name} adicionada!`);
+    // Limpar formulário do modal
     document.querySelectorAll('#customModal input').forEach(inp => {
         if (inp.type === 'checkbox') inp.checked = false;
         if (inp.type === 'radio' && inp.value === '') inp.checked = true;
@@ -111,9 +142,10 @@ document.getElementById('confirmAdd').onclick = () => {
     currentPizza = null;
 };
 
+// Confirmar pedido e enviar WhatsApp
 confirmOrderBtn.onclick = () => {
     if (cart.length === 0) {
-        showToast('Carrinho vazio! Adicione pizzas.');
+        showToast('Carrinho vazio! Adicione pizzas ou bebidas.');
         return;
     }
     const cep = document.getElementById('cep').value.trim();
@@ -129,17 +161,24 @@ confirmOrderBtn.onclick = () => {
     
     let msg = '🍕 *PEDIDO PIZZA AL CUORE* 🍕\n\n';
     let totalGeral = 0;
-    cart.forEach((item, idx) => {
-        msg += `*${idx+1}.* ${item.pizza} - R$ ${item.basePrice.toFixed(2)}\n`;
-        if (item.bebidas.length) {
-            msg += `   🥤 Bebidas: ${item.bebidas.map(b=>`${b.name} (R$${b.price})`).join(', ')}\n`;
+    let itemCount = 1;
+    cart.forEach(item => {
+        if (item.tipo === 'pizza') {
+            msg += `*${itemCount}.* 🍕 ${item.pizza} - R$ ${item.basePrice.toFixed(2)}\n`;
+            if (item.bebidas.length) {
+                msg += `   🥤 Bebidas: ${item.bebidas.map(b=>`${b.name} (R$${b.price})`).join(', ')}\n`;
+            }
+            if (item.extras.length) {
+                msg += `   🧂 Extras: ${item.extras.map(e=>e.name).join(', ')}\n`;
+            }
+            if (item.borda) msg += `   🧀 ${item.borda.name}\n`;
+            msg += `   ➡️ Subtotal: R$ ${item.total.toFixed(2)}\n\n`;
+            totalGeral += item.total;
+        } else if (item.tipo === 'bebida') {
+            msg += `*${itemCount}.* 🥤 ${item.nome} - R$ ${item.preco.toFixed(2)}\n\n`;
+            totalGeral += item.preco;
         }
-        if (item.extras.length) {
-            msg += `   🧂 Extras: ${item.extras.map(e=>e.name).join(', ')}\n`;
-        }
-        if (item.borda) msg += `   🧀 Borda: ${item.borda.name}\n`;
-        msg += `   ➡️ Subtotal: R$ ${item.total.toFixed(2)}\n\n`;
-        totalGeral += item.total;
+        itemCount++;
     });
     msg += `💰 *TOTAL: R$ ${totalGeral.toFixed(2)}*\n\n`;
     msg += `📬 *ENDEREÇO DE ENTREGA*\n`;
@@ -159,7 +198,7 @@ confirmOrderBtn.onclick = () => {
     showToast('Pedido enviado! Redirecionando para o WhatsApp.');
 };
 
-// Menu mobile, scroll e filtros (mesmo código anterior)
+// Menu mobile
 const menuBtn = document.querySelector('.menu-mobile');
 const navLinks = document.querySelector('.nav-links');
 if (menuBtn) {
@@ -182,6 +221,7 @@ if (menuBtn) {
     });
 }
 
+// Filtros de pizza
 const filtroBtns = document.querySelectorAll('.filtro-btn');
 const pizzaItems = document.querySelectorAll('.pizza-item');
 filtroBtns.forEach(btn => {
@@ -198,6 +238,7 @@ filtroBtns.forEach(btn => {
     });
 });
 
+// Scroll suave e navbar scroll
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
         e.preventDefault();
@@ -215,3 +256,19 @@ window.addEventListener('scroll', () => {
     if (window.scrollY > 50) navbar.classList.add('scrolled');
     else navbar.classList.remove('scrolled');
 });
+
+// Newsletter
+const newsletterForm = document.getElementById('newsletterForm');
+if (newsletterForm) {
+    newsletterForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('newsName').value;
+        const email = document.getElementById('newsEmail').value;
+        if (name && email) {
+            showToast(`Obrigado ${name}! Você receberá nossas novidades.`);
+            newsletterForm.reset();
+        } else {
+            showToast('Preencha nome e e-mail corretamente.');
+        }
+    });
+}
