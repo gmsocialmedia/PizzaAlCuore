@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizza Al Cuore | Pizzaria Artesanal</title>
+    <meta name="description" content="Pizza Al Cuore - Pizzaria artesanal com sabores autênticos no forno a lenha.">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="root">
+        <!-- Navegação -->
+        <nav class="navbar">
+            <div class="container nav-container">
+                <a href="#hero" class="logo-link">
+                    <img src="images/logo.jpeg" alt="Pizza Al Cuore" class="logo-img">
+                    <span class="logo-text">Pizza <span class="gold">Al Cuore</span></span>
+                </a>
+                <div class="nav-links">
+                    <a href="#hero">Início</a>
+                    <a href="#cardapio">Cardápio</a>
+                    <a href="#contato">Contato</a>
+                    <button class="cart-icon" id="cartBtn">
+                        🛒 <span id="cartCount">0</span>
+                    </button>
+                    <a href="https://wa.me/5581991644702" target="_blank" class="btn-pedir">Pedir Agora</a>
+                </div>
+                <button class="menu-mobile" aria-label="Menu">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section id="hero" class="hero">
+            <div class="hero-bg"></div>
+            <div class="container hero-content">
+                <div class="hero-text">
+                    <span class="hero-tag">Pizzeria Artesanal</span>
+                    <h1 class="hero-title">Pizza <span class="gold">Al Cuore</span></h1>
+                </div>
+                <div class="hero-pizza">
+                    <div class="pizza-card">
+                        <img src="images/margherita.jpg" alt="Pizza Margherita" class="pizza-main-img">
+                        <h2>Margherita</h2>
+                        <p>Molho de tomate, mozzarella di bufala e manjericão</p>
+                        <span class="price">R$ 42</span>
+                        <button class="btn-order add-to-cart" data-name="Margherita" data-price="42">Adicionar ao Carrinho</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cardápio completo -->
+        <section id="cardapio" class="cardapio">
+            <div class="container">
+                <div class="section-header">
+                    <span>Nosso Cardápio</span>
+                    <h2>Sabores Artesanais</h2>
+                </div>
+                <div class="filtros">
+                    <button class="filtro-btn active">Todas</button>
+                    <button class="filtro-btn">Tradicionais</button>
+                    <button class="filtro-btn">Especiais</button>
+                </div>
+                <div class="pizza-grid">
+                    <div class="pizza-item" data-categoria="tradicional">
+                        <div class="pizza-img-wrapper"><img src="images/margherita.jpg" alt="Margherita"></div>
+                        <div class="pizza-info"><h3>Margherita</h3><p>Tomate, mozzarella, manjericão</p><div class="pizza-price">R$ 42</div><button class="btn-add add-to-cart" data-name="Margherita" data-price="42">+ Adicionar</button></div>
+                    </div>
+                    <div class="pizza-item" data-categoria="tradicional">
+                        <div class="pizza-img-wrapper"><img src="images/mussarela.jpg" alt="Mussarela"></div>
+                        <div class="pizza-info"><h3>Mussarela</h3><p>Mussarela, tomate, orégano</p><div class="pizza-price">R$ 38</div><button class="btn-add add-to-cart" data-name="Mussarela" data-price="38">+ Adicionar</button></div>
+                    </div>
+                    <div class="pizza-item" data-categoria="tradicional">
+                        <div class="pizza-img-wrapper"><img src="images/calabresa.jpg" alt="Calabresa"></div>
+                        <div class="pizza-info"><h3>Calabresa</h3><p>Calabresa fatiada, cebola, mussarela</p><div class="pizza-price">R$ 45</div><button class="btn-add add-to-cart" data-name="Calabresa" data-price="45">+ Adicionar</button></div>
+                    </div>
+                    <div class="pizza-item" data-categoria="tradicional">
+                        <div class="pizza-img-wrapper"><img src="images/napolitana.jpg" alt="Napolitana"></div>
+                        <div class="pizza-info"><h3>Napolitana</h3><p>Tomate, alho, manjericão, parmesão</p><div class="pizza-price">R$ 40</div><button class="btn-add add-to-cart" data-name="Napolitana" data-price="40">+ Adicionar</button></div>
+                    </div>
+                    <div class="pizza-item" data-categoria="especial">
+                        <div class="pizza-img-wrapper"><img src="images/4queijos.jpg" alt="4 Queijos"></div>
+                        <div class="pizza-info"><h3>4 Queijos</h3><p>Mussarela, provolone, parmesão, gorgonzola</p><div class="pizza-price">R$ 52</div><button class="btn-add add-to-cart" data-name="4 Queijos" data-price="52">+ Adicionar</button></div>
+                    </div>
+                    <div class="pizza-item" data-categoria="especial">
+                        <div class="pizza-img-wrapper"><img src="images/bacon.jpg" alt="Bacon"></div>
+                        <div class="pizza-info"><h3>Bacon</h3><p>Bacon crocante, mussarela, cebola roxa</p><div class="pizza-price">R$ 49</div><button class="btn-add add-to-cart" data-name="Bacon" data-price="49">+ Adicionar</button></div>
+                    </div>
+                    <div class="pizza-item" data-categoria="especial">
+                        <div class="pizza-img-wrapper"><img src="images/frangocatupiry.jpg" alt="Frango com Catupiry"></div>
+                        <div class="pizza-info"><h3>Frango com Catupiry</h3><p>Frango desfiado, catupiry, milho</p><div class="pizza-price">R$ 50</div><button class="btn-add add-to-cart" data-name="Frango com Catupiry" data-price="50">+ Adicionar</button></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Modal de personalização -->
+        <div id="customModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h3>Personalize seu pedido</h3>
+                <div class="modal-body">
+                    <div class="custom-section"><h4>🥤 Bebidas</h4>
+                        <label><input type="checkbox" value="Coca 1L" data-price="8"> Coca 1L - R$8</label>
+                        <label><input type="checkbox" value="Coca 2L" data-price="12"> Coca 2L - R$12</label>
+                        <label><input type="checkbox" value="Guaraná 2L" data-price="10"> Guaraná 2L - R$10</label>
+                        <label><input type="checkbox" value="Coca Lata" data-price="5"> Coca Lata - R$5</label>
+                    </div>
+                    <div class="custom-section"><h4>🧂 Ingredientes extras</h4>
+                        <label><input type="checkbox" value="Ketchup" data-price="2"> Ketchup - R$2</label>
+                        <label><input type="checkbox" value="Maionese" data-price="2"> Maionese - R$2</label>
+                        <label><input type="checkbox" value="Mostarda" data-price="2"> Mostarda - R$2</label>
+                    </div>
+                    <div class="custom-section"><h4>🧀 Borda recheada</h4>
+                        <label><input type="radio" name="borda" value="Catupiry" data-price="8"> Catupiry - R$8</label>
+                        <label><input type="radio" name="borda" value="Cheddar" data-price="8"> Cheddar - R$8</label>
+                        <label><input type="radio" name="borda" value="" data-price="0" checked> Sem borda recheada</label>
+                    </div>
+                </div>
+                <div class="modal-footer"><button id="confirmAdd">Adicionar ao Carrinho</button></div>
+            </div>
+        </div>
+
+        <!-- Modal do Carrinho -->
+        <div id="cartModal" class="modal">
+            <div class="modal-content cart-modal">
+                <span class="close-cart">&times;</span>
+                <h3>🛒 Meu Carrinho</h3>
+                <div id="cartItemsList" class="cart-items"></div>
+                <div class="cart-total"><strong>Total: R$ <span id="cartTotal">0</span></strong></div>
+                <hr>
+                <h4>Endereço de entrega</h4>
+                <form id="addressForm">
+                    <input type="text" id="cep" placeholder="CEP" required>
+                    <input type="text" id="endereco" placeholder="Endereço" required>
+                    <input type="text" id="numero" placeholder="Número" required>
+                    <input type="text" id="complemento" placeholder="Complemento (apto/casa)">
+                    <input type="text" id="referencia" placeholder="Ponto de referência">
+                    <button type="button" id="confirmOrderBtn" class="btn-order">Confirmar Pedido → WhatsApp</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="toastMsg" class="toast">Produto adicionado ao carrinho!</div>
+
+        <footer class="footer">
+            <div class="container"><p>&copy; 2025 Pizza Al Cuore. Todos os direitos reservados.</p></div>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
