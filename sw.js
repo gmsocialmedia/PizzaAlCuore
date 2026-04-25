@@ -29,14 +29,3 @@ self.addEventListener('fetch', event => {
       .then(response => response || fetch(event.request))
   );
 });
-
-// Registrar Service Worker para PWA
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').then(reg => {
-      console.log('Service Worker registrado com sucesso:', reg);
-    }).catch(err => {
-      console.log('Falha ao registrar Service Worker:', err);
-    });
-  });
-}
