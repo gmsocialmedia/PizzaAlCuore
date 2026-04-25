@@ -650,3 +650,21 @@ h1, h2, h3, .logo-text {
     padding: 2rem 0;
     color: var(--text-light);
 }
+
+/* Botão Pedir Agora com borda e contraste */
+.btn-pedir {
+    background: transparent;
+    border: 2px solid var(--gold);
+    color: var(--gold) !important;
+    padding: 0.6rem 1.5rem;
+    border-radius: 40px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+.btn-pedir:hover {
+    background: var(--gold);
+    color: var(--black) !important;
+    border-color: var(--gold);
+    transform: scale(1.05);
+}
