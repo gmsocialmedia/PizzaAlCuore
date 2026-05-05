@@ -1,6 +1,7 @@
 let cart = [];
 let nextId = 1;
 let currentPizza = null;
+let pendingOrderData = null;
 
 const cartModal = document.getElementById('cartModal');
 const customModal = document.getElementById('customModal');
@@ -11,54 +12,35 @@ const cartTotalSpan = document.getElementById('cartTotal');
 const toast = document.getElementById('toastMsg');
 const confirmOrderBtn = document.getElementById('confirmOrderBtn');
 
-cartBtn.onclick = () => {
-    renderCart();
-    cartModal.style.display = 'flex';
-};
+cartBtn.onclick = () => { renderCart(); cartModal.style.display = 'flex'; };
 document.querySelector('.close-cart').onclick = () => cartModal.style.display = 'none';
 window.onclick = (e) => {
     if (e.target === cartModal) cartModal.style.display = 'none';
     if (e.target === customModal) customModal.style.display = 'none';
+    if (e.target === document.getElementById('pixModal')) document.getElementById('pixModal').style.display = 'none';
 };
 
-function showToast(msg) {
-    toast.textContent = msg;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 2500);
-}
-
-function updateCartCount() {
-    cartCountSpan.textContent = cart.length;
-}
+function showToast(msg) { toast.textContent = msg; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2500); }
+function updateCartCount() { cartCountSpan.textContent = cart.length; }
 
 function renderCart() {
     if (!cartItemsDiv) return;
-    if (cart.length === 0) {
-        cartItemsDiv.innerHTML = '<p style="text-align:center">Seu carrinho está vazio.</p>';
-        cartTotalSpan.innerText = '0';
-        return;
-    }
-    let html = '';
-    let total = 0;
+    if (cart.length === 0) { cartItemsDiv.innerHTML = '<p style="text-align:center">Seu carrinho está vazio.</p>'; cartTotalSpan.innerText = '0'; return; }
+    let html = '', total = 0;
     cart.forEach((item, idx) => {
         total += item.total;
         if (item.tipo === 'pizza') {
-            html += `<div class="cart-item">
-                <strong>🍕 ${item.pizza}</strong> - R$ ${item.basePrice.toFixed(2)}<br>`;
+            html += `<div class="cart-item"><strong>🍕 ${item.pizza}</strong> - R$ ${item.basePrice.toFixed(2)}<br>`;
             if (item.bebidas.length) html += `🥤 Bebidas: ${item.bebidas.map(b=>`${b.name} (R$${b.price})`).join(', ')}<br>`;
             if (item.extras.length) html += `🧂 Extras: ${item.extras.map(e=>e.name).join(', ')}<br>`;
             if (item.borda) html += `🧀 ${item.borda.name}<br>`;
-            html += `<small>Subtotal: R$ ${item.total.toFixed(2)}</small><br>
-            <button class="remove-item" data-idx="${idx}">Remover</button></div>`;
-        } else if (item.tipo === 'bebida') {
-            html += `<div class="cart-item">
-                <strong>🥤 ${item.nome}</strong> - R$ ${item.preco.toFixed(2)}<br>
-                <button class="remove-item" data-idx="${idx}">Remover</button></div>`;
+            html += `<small>Subtotal: R$ ${item.total.toFixed(2)}</small><br><button class="remove-item" data-idx="${idx}">Remover</button></div>`;
+        } else {
+            html += `<div class="cart-item"><strong>🥤 ${item.nome}</strong> - R$ ${item.preco.toFixed(2)}<br><button class="remove-item" data-idx="${idx}">Remover</button></div>`;
         }
     });
     cartItemsDiv.innerHTML = html;
     cartTotalSpan.innerText = total.toFixed(2);
-    
     document.querySelectorAll('.remove-item').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const idx = parseInt(btn.dataset.idx);
@@ -99,14 +81,9 @@ document.getElementById('confirmAdd').onclick = () => {
         .map(cb => ({ name: cb.value, price: parseFloat(cb.dataset.price) }));
     let borda = null;
     const bordaSelected = document.querySelector('#customModal input[name="borda"]:checked');
-    if (bordaSelected && bordaSelected.value) {
-        borda = { name: `Borda ${bordaSelected.value}`, price: parseFloat(bordaSelected.dataset.price) };
-    }
+    if (bordaSelected && bordaSelected.value) borda = { name: `Borda ${bordaSelected.value}`, price: parseFloat(bordaSelected.dataset.price) };
     const totalItem = currentPizza.basePrice + bebidas.reduce((a,b)=>a+b.price,0) + extras.reduce((a,b)=>a+b.price,0) + (borda ? borda.price : 0);
-    cart.push({
-        id: nextId++, tipo: 'pizza', pizza: currentPizza.name, basePrice: currentPizza.basePrice,
-        bebidas: bebidas, extras: extras, borda: borda, total: totalItem
-    });
+    cart.push({ id: nextId++, tipo: 'pizza', pizza: currentPizza.name, basePrice: currentPizza.basePrice, bebidas, extras, borda, total: totalItem });
     updateCartCount();
     showToast(`${currentPizza.name} adicionada!`);
     document.querySelectorAll('#customModal input').forEach(inp => {
@@ -117,7 +94,10 @@ document.getElementById('confirmAdd').onclick = () => {
     currentPizza = null;
 };
 
-// Confirmar pedido
+function enviarPedidoWhatsApp(mensagem) { window.open(`https://wa.me/5581991644702?text=${encodeURIComponent(mensagem)}`, '_blank'); }
+function limparCarrinhoEFechar() { cart = []; updateCartCount(); renderCart(); cartModal.style.display = 'none'; showToast('Pedido enviado! Redirecionando para o WhatsApp.'); }
+
+// Confirmar pedido (abre modal PIX ou envia direto)
 confirmOrderBtn.onclick = () => {
     if (cart.length === 0) { showToast('Carrinho vazio!'); return; }
     const cep = document.getElementById('cep').value.trim();
@@ -126,9 +106,9 @@ confirmOrderBtn.onclick = () => {
     if (!cep || !endereco || !numero) { showToast('Preencha CEP, endereço e número.'); return; }
     const complemento = document.getElementById('complemento').value.trim();
     const referencia = document.getElementById('referencia').value.trim();
+    const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
     let msg = '🍕 *PEDIDO PIZZA AL CUORE* 🍕\n\n';
-    let totalGeral = 0;
-    let count = 1;
+    let totalGeral = 0, count = 1;
     cart.forEach(item => {
         if (item.tipo === 'pizza') {
             msg += `*${count}.* 🍕 ${item.pizza} - R$ ${item.basePrice.toFixed(2)}\n`;
@@ -146,14 +126,35 @@ confirmOrderBtn.onclick = () => {
     msg += `💰 *TOTAL: R$ ${totalGeral.toFixed(2)}*\n\n📬 *ENDEREÇO DE ENTREGA*\nCEP: ${cep}\n${endereco}, ${numero}\n`;
     if (complemento) msg += `Complemento: ${complemento}\n`;
     if (referencia) msg += `Referência: ${referencia}\n`;
-    msg += `\n🔔 *Pedido gerado automaticamente. Aguardo confirmação!*`;
-    window.open(`https://wa.me/5581991644702?text=${encodeURIComponent(msg)}`, '_blank');
-    cart = [];
-    updateCartCount();
-    renderCart();
-    cartModal.style.display = 'none';
-    showToast('Pedido enviado! Redirecionando para o WhatsApp.');
+    msg += `\n💳 *Pagamento:* ${paymentMethod}\n`;
+
+    if (paymentMethod === 'PIX') {
+        pendingOrderData = msg;
+        cartModal.style.display = 'none';
+        document.getElementById('pixModal').style.display = 'flex';
+    } else {
+        enviarPedidoWhatsApp(msg);
+        limparCarrinhoEFechar();
+    }
 };
+
+// Modal PIX
+const pixModal = document.getElementById('pixModal');
+const closePix = document.querySelector('.close-pix');
+const confirmPixBtn = document.getElementById('confirmPixPayment');
+closePix.onclick = () => { pixModal.style.display = 'none'; pendingOrderData = null; };
+confirmPixBtn.onclick = () => {
+    if (pendingOrderData) {
+        enviarPedidoWhatsApp(pendingOrderData + '\n✅ *Pagamento via PIX confirmado!*');
+        limparCarrinhoEFechar();
+        pixModal.style.display = 'none';
+        pendingOrderData = null;
+    }
+};
+document.getElementById('copyPixBtn')?.addEventListener('click', () => {
+    const code = document.querySelector('.pix-code code').innerText;
+    navigator.clipboard.writeText(code).then(() => showToast('Código PIX copiado!'));
+});
 
 // Menu mobile
 const menuBtn = document.querySelector('.menu-mobile');
@@ -195,16 +196,13 @@ filtroBtns.forEach(btn => {
     });
 });
 
-// Scroll suave e navbar
+// Scroll suave e navbar background
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
         e.preventDefault();
         const target = document.querySelector(this.getAttribute('href'));
         if (target) target.scrollIntoView({ behavior: 'smooth' });
-        if (navLinks.classList.contains('active')) {
-            navLinks.classList.remove('active');
-            navLinks.style.display = '';
-        }
+        if (navLinks.classList.contains('active')) { navLinks.classList.remove('active'); navLinks.style.display = ''; }
     });
 });
 window.addEventListener('scroll', () => {
@@ -214,17 +212,10 @@ window.addEventListener('scroll', () => {
 });
 
 // Newsletter
-const newsletterForm = document.getElementById('newsletterForm');
-if (newsletterForm) {
-    newsletterForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const name = document.getElementById('newsName').value;
-        const email = document.getElementById('newsEmail').value;
-        if (name && email) {
-            showToast(`Obrigado ${name}! Você receberá nossas novidades.`);
-            newsletterForm.reset();
-        } else {
-            showToast('Preencha nome e e-mail corretamente.');
-        }
-    });
-}
+document.getElementById('newsletterForm')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('newsName').value;
+    const email = document.getElementById('newsEmail').value;
+    if (name && email) { showToast(`Obrigado ${name}! Você receberá nossas novidades.`); e.target.reset(); }
+    else showToast('Preencha nome e e-mail corretamente.');
+});
